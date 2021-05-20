@@ -44,6 +44,17 @@ app.post('/api/notes',(req,res) => {
   res.status(200)
 })
 
+app.delete('/api/notes/:id',(req,res) => {
+  //parse the notes into array
+  const id = (req.params.id)
+  const notesArray = JSON.parse(notes)
+  const newNotesArray = notesArray.filter(obj => obj.id!==id)
+  
+  //re-save new array of notes
+  notes = JSON.stringify(newNotesArray)
+  fs.writeFileSync(path.join(__dirname, './db/db.json'),notes) //write updated notesArray to db.json
 
+  res.status(200)
+})
 
 app.listen(PORT, () => console.log(`App listening on PORT ${PORT}`));
