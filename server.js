@@ -8,6 +8,7 @@ const uniqid = require('uniqid');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+app.use(express.static('public'));
 
 //read in notes file
 let notes = fs.readFileSync(path.join(__dirname, './db/db.json'))  // TO DO this is JSON
