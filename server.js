@@ -1,12 +1,16 @@
 // Dependencies
-
 const express = require('express');
 const path = require('path');
+const fs = require('fs')
+const uniqid = require('uniqid');
 
 // Sets up the Express App
 
 const app = express();
 const PORT = 3000;
+
+//read in notes file
+let notes = fs.readFileSync(path.join(__dirname, './db/db.json'))  // TO DO this is JSON
 
 // Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
@@ -22,24 +26,23 @@ app.get('/notes', (req, res) => res.sendFile(path.join(__dirname, './public/note
 
 app.get('/api/notes',(req,res) => res.sendFile(path.join(__dirname, './db/db.json')))
 
-/* noteListItems and noteList
-// Create New Characters - takes in JSON input
-app.post('/api/characters', (req, res) => {
-  // req.body hosts is equal to the JSON post sent from the user
-  // This works because of our body parsing middleware
-  const newCharacter = req.body;
+//Post routes
+app.post('/api/notes',(req,res) => {
+  //parse the notes into array
+  const notesArray = JSON.parse(notes)
+  
+  //push the note into the array
+  newNote = {id:uniqid(), title:req.body.title, text: req.body.text }
+  console.log(newNote)
+  notesArray.push(newNote)
+  
+  //re-save new array of notes
+  notes = JSON.stringify(notesArray)
+  fs.writeFileSync(path.join(__dirname, './db/db.json'),notes) //write updated notesArray to db.json
 
-  // Using a RegEx Pattern to remove spaces from newCharacter
-  // You can read more about RegEx Patterns later https://www.regexbuddy.com/regex.html
-  newCharacter.routeName = newCharacter.name.replace(/\s+/g, '').toLowerCase();
-  console.log(newCharacter);
-
-  characters.push(newCharacter);
-  res.json(newCharacter);
-});
-
-// Starts the server to begin listening
- */
+  //result
+  res.status(200)
+})
 
 
 
